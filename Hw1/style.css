@@ -66,12 +66,11 @@
   
 
   .container {
-    padding: 8rem 0 6rem 0 ;/*內部距離*/
+    padding: 8rem 0 6rem 0 ;
     position: relative;
     z-index: 1; }
   
-  /* Header */
-  #header { /* 最上面的橫幅 */
+  #header { 
     display: flex;
     background: rgb(147, 215, 224);
     height: 50px;
@@ -88,47 +87,15 @@
     font-weight: 600;
     height: inherit;
     line-height: inherit;
-    padding: 0 18.75px; /* 上下 左右 */
+    padding: 0 18.75px;
     text-decoration: none;
   }
   
   
   
-  /* Banner */
-  /* #banner{
-    margin: 0;
-    padding: 0;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-    background-size: cover;
-    color: white;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    border-top: 0;
-    height: 750px;
-    position: relative;
-    text-align: center; 
-    width: 100%; 
-  }
-  #banner h1 {
-    font-family: Tahoma;
-    font-style: italic;
-    font-weight: 900;
-    color: white;
-    font-size: 75px;
-    margin-bottom: 15px; 
-  }
-  #banner p {
-    font-size: 25px; 
-    font-family: Tahoma; 
-    font-style: italic;
-  } */
   
   
-  
-  /* ABOUT */
+
   #personal{
     background-color:#ffd209;
     background-attachment: fixed;
