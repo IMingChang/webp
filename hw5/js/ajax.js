@@ -1,10 +1,11 @@
 function ajaxGet(path, timeFare){
     var motcData=[];
+    var motcData2=[];
     $.ajax({ 
         type: 'GET',
         url: path,
         dataType: 'json',
-        headers: GetAuthorizationHeader(),
+        //headers: GetAuthorizationHeader(),
         success: res =>{
             $.each(res, function(i, item) {
                 if(timeFare=="time"){
@@ -17,46 +18,72 @@ function ajaxGet(path, timeFare){
                     }
                 }
                 else if (timeFare=="fare"){
-                    motcData.push({
+                    motcData2.push({
                         "originStationName" : item.OriginStationName.Zh_tw,
                         "destinationStationName" : item.DestinationStationName.Zh_tw,
                         "fares" : [item.Fares[0].Price, item.Fares[1].Price,item.Fares[2].Price, item.Fares[3].Price, item.Fares[4].Price, item.Fares[5].Price, item.Fares[6].Price, item.Fares[7].Price, item.Fares[8].Price, item.Fares[9].Price]
                     })
                 }
             })
-            console.log(motcData);
-            var list=[];
-            for(i=0; i<motcData.length; i++){
-                list.push(motcData[i].originStationName);
-            }
-            var result = list.filter(function(element, index, arr){
-                return arr.indexOf(element) === index && element !== undefined;
-            });
-            for(i=0; i<result.length; i++){
-                $("#ulOriginFare").append("<li><p class='dropdown-item'>"+ result[i] +"</p></li>");
-                $("#ulDestinationFare").append("<li><p class='dropdown-item'>"+ result[i] +"</p></li>");
-            }
-            $("#ulOriginFare .dropdown-item").on("click", function(){
-                $("#dropdown1 button").html($(this).html());
-            })
-            $("#ulDestinationFare .dropdown-item").on("click", function(){
-                $("#dropdown2 button").html($(this).html());
-            })
-            console.log(result.length);
-            console.log(motcData[0].time);
-            for(i=0; i<result.length-1; i++){
-                var time=motcData[i+1].time-motcData[i].time
-                console.log(time);
-                $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i] +"</div><div class='col-1 text-center'>-><br>"+time+"s</div></div>");
-                if(i!=result.length-1){
-                    $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i+1] +"</div>");
+            if(timeFare=="time"){
+                console.log(motcData)
+                var list=[];
+                for(i=0; i<motcData.length; i++){
+                    list.push(motcData[i].fromStation);
                 }
+                var result = list.filter(function(element, index, arr){
+                    return arr.indexOf(element) === index && element !== undefined;
+                });
             }
-
-
+            if(timeFare=="fare"){
+                console.log(motcData2)
+                var list=[];
+                for(i=0; i<motcData2.length; i++){
+                    list.push(motcData2[i].originStationName);
+                }
+                var result = list.filter(function(element, index, arr){
+                    return arr.indexOf(element) === index && element !== undefined;
+                });
+                for(i=0; i<result.length; i++){
+                    $("#ulOriginFare").append("<li><p class='dropdown-item'>"+ result[i] +"</p></li>");
+                    $("#ulDestinationFare").append("<li><p class='dropdown-item'>"+ result[i] +"</p></li>");
+                }
+                $("#ulOriginFare .dropdown-item").on("click", function(){
+                    $("#dropdown1 button").html($(this).html());
+                })
+                $("#ulDestinationFare .dropdown-item").on("click", function(){
+                    $("#dropdown2 button").html($(this).html());
+                })
+            }
 
             if(timeFare=="time"){
-                $("#btFare").on("click", function(){ 
+                $("#btFare").on("click", function(){
+                    for(ii=0; ii<result.length-1; ii++){
+                        console.log($("#dropdownMenuButton1").text(), result[ii]);    
+                        if($("#dropdownMenuButton1").text()==result[ii]){
+                            for(i=ii; i<result.length-1; i++){
+                                if($("#dropdownMenuButton2").text()==result[i]){
+                                    var time=motcData[i].time-motcData[i-1].time
+                                    $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i] +"</div><div class='col-1 text-center'>-><br>"+time+"s</div></div>");
+                                    $("#rowTime .row .col-1:last").remove();
+                                    if(i==result.length-2){
+                                        $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i+1] +"</div>");
+                                    }
+                                    break;
+                                }
+                                if(i==0){
+                                    $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i] +"</div><div class='col-1 text-center'>-><br>"+motcData[i].time+"s</div></div>");
+                                }else{
+                                    var time=motcData[i].time-motcData[i-1].time
+                                    $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i] +"</div><div class='col-1 text-center'>-><br>"+time+"s</div></div>");
+                                }
+                                if(i==result.length-2){
+                                    $("#rowTime .row").append("<div class='col-1 text-center bg-dark border rounded border-0 border-dark overflow-hidden text-white align-self-center'>"+ result[i+1] +"</div>");
+                                }
+                            }
+                        }
+                    }
+                    console.log("time function")
                     var result1 = motcData.filter(function(element, index, arr){
                         return element.fromStation == $("#dropdown1 button").text() && element.toStation == $("#dropdown2 button").text()
                     });
@@ -65,7 +92,7 @@ function ajaxGet(path, timeFare){
             }
             else if (timeFare=="fare"){
                 $("#btFare").on("click", function(){ 
-                    var result1 = motcData.filter(function(element, index, arr){
+                    var result1 = motcData2.filter(function(element, index, arr){
                         return element.originStationName == $("#dropdown1 button").text() && element.destinationStationName == $("#dropdown2 button").text()
                     });
                     $("#price1").text(result1[0].fares[0]);
@@ -94,6 +121,9 @@ function ajaxGet(path, timeFare){
 
 
 $(document).ready(function(){
+    $('#btFare').on('click', function(){
+        $("#rowTime .row").html("");
+    })
     $("#btDownload").click(function(){
         farePath="https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/ODFare/TYMC?%24format=JSON";
         timePath="https://ptx.transportdata.tw/MOTC/v2/Rail/Metro/S2STravelTime/TYMC?%24format=JSON";
@@ -114,6 +144,7 @@ $(document).ready(function(){
         $("#ulOriginFare").html("");
         $("#ulDestinationFare").html("");
     })
+    
 });
 
 
